@@ -7,3 +7,4 @@ authors = ["Fran Guijarro <franleplant@gmail.com>"]
 [dependencies]
 image = "*"
 num = "0.1"
+conrod = "*"
