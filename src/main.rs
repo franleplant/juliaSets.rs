@@ -1,12 +1,13 @@
+extern crate image;
+use std::fs::File;
+use std::path::Path;
 use std::ops::Add;
+use image::{ImageBuffer, Rgba};
 
-static MAX_ITER: i64 = 10;
+static MAX_ITER: i64 = 1000;
 static BAILOUT: f64 = 2.0;
-static N: i64 = 10;
-static M: i64 = 10;
-// f64
-//
-//
+static N: i64 = 100;
+static M: i64 = 100;
 
 
 #[derive(Debug, Copy, Clone)]
@@ -41,48 +42,68 @@ impl Add for Complex {
     }
 }
 
-fn getZ0(center: &Complex, rangeX: f64, rangeY: f64 ) -> Complex {
+fn get_z0(center: &Complex, range_x: f64, range_y: f64 ) -> Complex {
     Complex::new(
-        center.x - rangeX / 2.0,
-        center.y + rangeY / 2.0
+        center.x - range_x / 2.0,
+        center.y + range_y / 2.0
     )
 }
 
-fn getDelta(rangeX: f64, rangeY: f64, width: i64, height: i64) -> (f64, f64) {
+fn get_delta(range_x: f64, range_y: f64, width: i64, height: i64) -> (f64, f64) {
     (
-        rangeX / (width as f64),
-        rangeY / (height as f64)
+        range_x / (width as f64),
+        range_y / (height as f64)
     )
 }
 
 fn fractal(z0: &Complex, delta: &(f64, f64), width: i64, height: i64) {
-    let C: Complex  = Complex{ x: 0.279, y:0.0 };
-    let mut x: f64;
-    let mut y: f64;
-    let mut u: f64;
-    let mut v: f64;
-    let mut xx: f64;
-    let mut yy: f64;
+    let c: Complex  = Complex{ x: 0.279, y:0.0 };
 
 
-    for j in 0..height {
-        for i in 0..width {
-            let mut z = Complex::new(
-                z0.x + delta.0 * (i as f64),
-                z0.y - delta.1 * (j as f64)
-            );
+    // Create a new ImgBuf with width: imgx and height: imgy
+    //let mut imgbuf = ImageBuffer::new(width as u32, height as u32);
 
-            let mut k = 0;
-            while (z.sqnorm() < BAILOUT) && (k < MAX_ITER) {
-                z = z.pow2() + C;
+    let img = ImageBuffer::from_fn(width as u32, height as u32, |i, j| {
+        let mut z = Complex::new(
+            z0.x + delta.0 * (i as f64),
+            z0.y - delta.1 * (j as f64)
+        );
 
-                k += 1;
-            }
-            println!("k {}", k);
+        let mut k = 0;
+        while (z.sqnorm() < BAILOUT) && (k < MAX_ITER) {
+            z = z.pow2() + c;
 
-
+            k += 1;
         }
-    }
+        println!("k {}", k);
+
+        Rgba([((k*10) % 255) as u8,255u8,255u8,255u8])
+    });
+    // Save the image as “fractal.png”
+    let ref mut fout = File::create(&Path::new("fractal.png")).unwrap();
+
+    // We must indicate the image’s color type and what format to save as
+    let _ = image::ImageRgba8(img).save(fout, image::PNG);
+    //let color = Rgba([1,1,1,1]);
+
+    //for j in 0..height {
+        //for i in 0..width {
+            //let mut z = Complex::new(
+                //z0.x + delta.0 * (i as f64),
+                //z0.y - delta.1 * (j as f64)
+            //);
+
+            //let mut k = 0;
+            //while (z.sqnorm() < BAILOUT) && (k < MAX_ITER) {
+                //z = z.pow2() + C;
+
+                //k += 1;
+            //}
+            //println!("k {}", k);
+
+
+        //}
+    //}
       //pos = 4 * M * j
       //col = 4 * i
 
@@ -96,25 +117,25 @@ fn fractal(z0: &Complex, delta: &(f64, f64), width: i64, height: i64) {
 
 fn main() {
     let center = Complex::new(0.0, 0.0);
-    let rangeX = 2.;
-    let rangeY = 2.;
-    let z0 = getZ0(&center, rangeX, rangeY);
-    let delta = getDelta(rangeX, rangeY, N, M);
+    let range_x = 2.;
+    let range_y = 2.;
+    let z0: Complex = get_z0(&center, range_x, range_y);
+    let delta = get_delta(range_x, range_y, N, M);
     fractal(&z0, &delta, N, M);
 }
 
 
 #[test]
-fn test_getZ0() {
+fn test_get_z0() {
     let center = Complex::new(0.0, 0.0);
-    let z0 = getZ0(&center, 2.0, 2.0);
+    let z0 = get_z0(&center, 2.0, 2.0);
     assert!(z0.x == -1.0);
     assert!(z0.y == 1.0);
 }
 
 #[test]
-fn test_getDelta() {
-    let (dx, dy) = getDelta(2.0, 2.0, 2, 2);
+fn test_get_delta() {
+    let (dx, dy) = get_delta(2.0, 2.0, 2, 2);
     assert!(dx == 1.0);
     assert!(dy == 1.0);
 }
