@@ -47,7 +47,7 @@ fn color_by_index(k: i64) -> Rgba<u8> {
     Rgba([r as u8, g as u8, b as u8, a as u8])
 }
 
-fn fractal<F>(z0: &Complex<f64>, delta: &(f64, f64), f: F, width: i64, height: i64, max_iter: i64)
+fn fractal<F>(f: F, z0: &Complex<f64>, delta: &(f64, f64), width: i64, height: i64, max_iter: i64)
     where F: Fn(Complex<f64>) -> Complex<f64> {
 
     static BAILOUT: f64 = 2.0;
@@ -81,7 +81,7 @@ fn main() {
     let z0 = get_z0(&center, RANGE_X, RANGE_Y);
     let delta = get_delta(RANGE_X, RANGE_Y, N, M);
     let f = |z| z*z + Complex::new( 0.279, 0.0 );
-    fractal(&z0, &delta, f, N, M, MAX_ITER);
+    fractal(f, &z0, &delta, N, M, MAX_ITER);
 }
 
 
