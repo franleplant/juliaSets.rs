@@ -8,3 +8,4 @@ authors = ["Fran Guijarro <franleplant@gmail.com>"]
 image = "*"
 num = "0.1"
 conrod = "*"
+elmesque = "*"
