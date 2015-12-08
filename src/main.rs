@@ -15,6 +15,8 @@ static N: i64 = 1000;
 static M: i64 = 1000;
 static RANGE_X: f64 = 3.;
 static RANGE_Y: f64 = 3.;
+const STEP: f32 = 5.0;
+const PHASE: f32 = 0.0;
 
 
 fn get_z0(center: &Complex<f64>, range_x: f64, range_y: f64 ) -> Complex<f64> {
@@ -32,8 +34,6 @@ fn get_delta(range_x: f64, range_y: f64, width: i64, height: i64) -> (f64, f64) 
 }
 
 fn color_by_index(k: i64) -> Rgba<u8> {
-    const STEP: f32 = 5.0;
-    const PHASE: f32 = 0.0;
 
     let hue = ((STEP * (k as f32) + PHASE)% 360.0) * 2.0 * PI as f32 / 360.0;
     //println!("k {}, hue {}", k, hue);
@@ -81,6 +81,7 @@ fn main() {
     let z0 = get_z0(&center, RANGE_X, RANGE_Y);
     let delta = get_delta(RANGE_X, RANGE_Y, N, M);
     let f = |z| z*z + Complex::new( 0.279, 0.0 );
+
     fractal(f, &z0, &delta, N, M, MAX_ITER);
 }
 
