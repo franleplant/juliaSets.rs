@@ -47,12 +47,12 @@ fn color_by_index(k: i64) -> Rgba<u8> {
     Rgba([r as u8, g as u8, b as u8, a as u8])
 }
 
-fn fractal<F>(f: F, z0: &Complex<f64>, delta: &(f64, f64), width: i64, height: i64, max_iter: i64)
+fn fractal<F>(f: F, z0: &Complex<f64>, delta: &(f64, f64), width: i64, height: i64, max_iter: i64) -> image::RgbaImage
     where F: Fn(Complex<f64>) -> Complex<f64> {
 
     static BAILOUT: f64 = 2.0;
 
-    let img = ImageBuffer::from_fn(width as u32, height as u32, |i, j| {
+    ImageBuffer::from_fn(width as u32, height as u32, |i, j| {
         let mut z = Complex::new(
             z0.re + delta.0 * (i as f64),
             z0.im - delta.1 * (j as f64)
@@ -68,12 +68,7 @@ fn fractal<F>(f: F, z0: &Complex<f64>, delta: &(f64, f64), width: i64, height: i
         }
 
         color_by_index(k)
-    });
-    // Save the image as “fractal.png”
-    let ref mut fout = File::create(&Path::new("fractal.png")).unwrap();
-
-    // We must indicate the image’s color type and what format to save as
-    let _ = image::ImageRgba8(img).save(fout, image::PNG);
+    })
 }
 
 fn main() {
@@ -82,7 +77,12 @@ fn main() {
     let delta = get_delta(RANGE_X, RANGE_Y, N, M);
     let f = |z| z*z + Complex::new( 0.279, 0.0 );
 
-    fractal(f, &z0, &delta, N, M, MAX_ITER);
+    let img = fractal(f, &z0, &delta, N, M, MAX_ITER);
+    // Save the image as “fractal.png”
+    let ref mut fout = File::create(&Path::new("fractal.png")).unwrap();
+
+    // We must indicate the image’s color type and what format to save as
+    let _ = image::ImageRgba8(img).save(fout, image::PNG);
 }
 
 
