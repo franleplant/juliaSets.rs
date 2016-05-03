@@ -98,7 +98,7 @@ fn fractal<F>(f: &F, z0: &Complex<f64>, delta: &(f64, f64), width: i64, height: 
 fn main_png() {
     let zoom = 10f64;
     let range_x = RANGE_X / zoom;
-    let range_y = RANGE_Y / zoom;                    w
+    let range_y = RANGE_Y / zoom;
     let center = Complex::new(-0.8195999999999999, 0.9);
     let z0 = get_z0(&center, range_x, range_y);
     let delta = get_delta(range_x, range_y, N, M);
