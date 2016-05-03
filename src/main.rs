@@ -20,6 +20,7 @@ const PHASE: f32 = 0.0;
 
 
 type Colorizer = Fn(f32) -> image::Rgba<u8>;
+
 fn get_z0(center: &Complex<f64>, range_x: f64, range_y: f64 ) -> Complex<f64> {
     Complex::new(
         center.re - range_x / 2.0,
@@ -48,20 +49,6 @@ fn color_by_index_factory(step: f32, phase: f32, saturation: f32, lightness: f32
         image::Rgba([r, g, b, a])
     })
 }
-
-fn color_by_index(k: i64) -> image::Rgba<u8> {
-    let hue = ((STEP * (k as f32) + PHASE)% 360.0) * 2.0 * PI as f32 / 360.0;
-    //println!("k {}, hue {}", k, hue);
-    let color = Color::Hsla(hue as f32, 0.7f32, 0.6f32, 0.9f32);
-    let elmesque::color::Rgba(r, g, b, a) = color.to_rgb();
-    let r = r * 255f32;
-    let g = g * 255f32;
-    let b = b * 255f32;
-    let a = a * 255f32;
-    //println!("{}, {}, {}, {}", r,g,b,a);
-    image::Rgba([r as u8, g as u8, b as u8, a as u8])
-}
-
 
 fn fractal<F>(f: &F, z0: &Complex<f64>, delta: &(f64, f64), width: i64, height: i64, colorizer: &Box<Colorizer>, max_iter: i64) -> image::RgbaImage
     where F: Fn(Complex<f64>) -> Complex<f64> {
@@ -106,18 +93,29 @@ fn fractal<F>(f: &F, z0: &Complex<f64>, delta: &(f64, f64), width: i64, height: 
     img
 }
 
-fn main() {
-    // The following commented lines are for saving a single "frame" into a png
-    //let center = Complex::new(0.0, 0.0);
-    //let z0 = get_z0(&center, RANGE_X, RANGE_Y);
-    //let delta = get_delta(RANGE_X, RANGE_Y, N, M);
-    //let f = |z| z*z + Complex::new( 0.279, 0.0 );
-    //let mut img = fractal(f, &z0, &delta, N, M, MAX_ITER);
-    // Save the image as “fractal.png”
-    //let ref mut fout = File::create(&Path::new("fractal.png")).unwrap();
-    // We must indicate the image’s color type and what format to save as
-    //let _ = image::ImageRgba8(img).save(fout, image::PNG);
 
+/// create a png
+fn main_png() {
+    let zoom = 10f64;
+    let range_x = RANGE_X / zoom;
+    let range_y = RANGE_Y / zoom;                    w
+    let center = Complex::new(-0.8195999999999999, 0.9);
+    let z0 = get_z0(&center, range_x, range_y);
+    let delta = get_delta(range_x, range_y, N, M);
+    let c = Complex::new( 0.268, 0.06 );
+    let f = |z: Complex<f64>| (z*z + z) / z.ln() + c;
+    let colorizer = color_by_index_factory(STEP as f32, PHASE as f32, 0.7f32, 0.6f32, 0.9f32 );
+
+
+
+    let img = fractal(&f, &z0, &delta, N, M, &colorizer, MAX_ITER);
+    let ref mut fout = File::create(&Path::new("fractal.png")).unwrap();
+    let _ = image::ImageRgba8(img).save(fout, image::PNG);
+}
+
+
+/// Create a gif
+fn main_gif() {
     let c = Complex::new( 0.279, 0.0 );
     let f = |z| z*z + c;
     let center = Complex::new(0.4959986657096176, 0.17224325099767768);
@@ -145,6 +143,13 @@ fn main() {
         // Write frame to file
         encoder.write_frame(&frame).unwrap();
     }
+}
+
+fn main() {
+
+    main_png();
+    //main_gif();
+
 }
 
 
