@@ -8,6 +8,6 @@ authors = ["Fran Guijarro <franleplant@gmail.com>"]
 image = "*"
 num = "0.1"
 conrod = "*"
-elmesque = "*"
 gif = "*"
 rayon = "*"
+clap = {version = "*", features = ["yaml"]}

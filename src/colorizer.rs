@@ -4,6 +4,7 @@ use conrod::color::{Rgba, Color};
 
 use generator::Colorizer;
 
+#[derive(Debug)]
 pub struct SimpleColorizer {
     step: f32,
     phase: f32,
