@@ -2,21 +2,25 @@ extern crate image;
 extern crate num;
 extern crate conrod;
 extern crate gif;
+extern crate rayon;
 
 mod colorizer;
 
-use colorizer::SimpleColorizer;
+use rayon::prelude::*;
 use std::fs::File;
 use std::default::Default;
 use std::path::Path;
 use num::Complex;
+use std::marker::Sync;
+
+use colorizer::SimpleColorizer;
 
 pub trait Colorizer {
     fn calc_color(&self, k: u32) -> Vec<u8>;
 }
 
 
-struct ImgGenerator<C: Colorizer> {
+struct ImgGenerator<C: Colorizer + Sync> {
     bailout: f64,
     max_iter: u32,
     width: u32,
@@ -28,7 +32,7 @@ struct ImgGenerator<C: Colorizer> {
     center: Complex<f64>,
 }
 
-impl<C: Default + Colorizer> Default for ImgGenerator<C> {
+impl<C: Default + Colorizer + Sync> Default for ImgGenerator<C> {
     fn default() -> ImgGenerator<C> {
         let bailout = 2.0;
         let max_iter = 100;
@@ -52,7 +56,7 @@ impl<C: Default + Colorizer> Default for ImgGenerator<C> {
     }
 }
 
-impl<C: Colorizer> ImgGenerator<C> {
+impl<C: Colorizer + Sync> ImgGenerator<C> {
     fn calc_z0(&self) -> Complex<f64> {
         let scaled_range_x = self.range_x / self.zoom;
         let scaled_range_y = self.range_y / self.zoom;
@@ -75,7 +79,7 @@ impl<C: Colorizer> ImgGenerator<C> {
 
     pub fn render<F>(&self, func: F) -> image::RgbaImage
     where
-        F: Fn(Complex<f64>) -> Complex<f64>,
+        F: Fn(Complex<f64>) -> Complex<f64> + Sync,
     {
         let z0 = self.calc_z0();
         let delta = self.calc_delta();
@@ -87,7 +91,7 @@ impl<C: Colorizer> ImgGenerator<C> {
         }
 
         let raw = empty_image
-            .iter()
+            .par_iter()
             .enumerate()
             .map(|(k, _)| {
                 let i = k % self.width as usize;
