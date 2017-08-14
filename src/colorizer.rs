@@ -2,7 +2,7 @@ use std::f64::consts::PI;
 use std::default::Default;
 use conrod::color::{Rgba, Color};
 
-use super::Colorizer;
+use generator::Colorizer;
 
 pub struct SimpleColorizer {
     step: f32,
@@ -39,4 +39,11 @@ impl Colorizer for SimpleColorizer {
         //THis is a pixel
         vec![r, g, b, a]
     }
+}
+
+//TODO
+#[test]
+fn test_color_by_index_factory() {
+    let f = color_by_index_factory(1.0 as f32, 0.0 as f32, 0.7f32, 0.6f32, 0.9f32);
+    let c = f(2 as f32);
 }
