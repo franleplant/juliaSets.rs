@@ -9,6 +9,7 @@ extern crate clap;
 mod fparams;
 mod fgenerator;
 mod colorizer;
+mod funcs;
 
 use std::fs::File;
 use std::path::Path;
@@ -21,6 +22,9 @@ use fgenerator::FGenerator;
 
 //TODO support for more functions
 //TODO support for gifs
+//TODO add more test cases
+//TODO pretty print FParams before running the program
+//TODO support for a parametric colorizer
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();

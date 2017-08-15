@@ -4,16 +4,14 @@ use rayon::prelude::*;
 
 use fparams::FParams;
 use colorizer::SimpleColorizer;
+use funcs;
+
+pub type ComplexFn = fn(Complex<f64>, Complex<f64>) -> Complex<f64>;
 
 pub trait Colorizer {
     fn calc_color(&self, k: u32) -> Vec<u8>;
 }
 
-pub type ComplexFn = fn(Complex<f64>, Complex<f64>) -> Complex<f64>;
-
-fn square(x: Complex<f64>, c: Complex<f64>) -> Complex<f64> {
-    x * x + c
-}
 
 pub struct FGenerator {
     params: FParams,
@@ -26,7 +24,8 @@ pub struct FGenerator {
 impl FGenerator {
     pub fn new(params: FParams) -> FGenerator {
         let func = match params.kind_fn {
-            0 => square,
+            0 => funcs::x2,
+            1 => funcs::x3,
             _ => panic!("Function not supported"),
         };
 
@@ -78,7 +77,10 @@ impl FGenerator {
 
     fn escape_time_to_color(&self, i: usize, j: usize) -> Vec<u8> {
         let params = self.get_params();
-        let mut z = Complex::new(params.z0.re + params.delta.re * (i as f64), params.z0.im - params.delta.im * (j as f64));
+        let mut z = Complex::new(
+            params.z0.re + params.delta.re * (i as f64),
+            params.z0.im - params.delta.im * (j as f64),
+        );
 
         let mut k = 0;
         while (z.norm_sqr() < params.bailout) && (k < params.max_iter) {

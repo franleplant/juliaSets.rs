@@ -2,7 +2,7 @@ use std::default::Default;
 use std::str::FromStr;
 
 use num::Complex;
-use clap::{ArgMatches};
+use clap::ArgMatches;
 
 #[derive(Debug)]
 pub struct FParams {
@@ -70,10 +70,11 @@ impl FParams {
 }
 
 fn parse_with_default<'a, T>(opt: Option<&'a str>, default: T) -> T
-where T: FromStr
+where
+    T: FromStr,
 {
     if opt.is_none() {
-        return default
+        return default;
     }
 
     opt.unwrap().parse().unwrap_or(default)
@@ -95,15 +96,14 @@ impl<'a> From<&'a ArgMatches<'a>> for FParams {
             ..
         } = Default::default();
 
-        //println!("{:?}", matches.value_of("center_x").unwrap_or(&center.re.to_string()).map(|s| s.parse()));
         let center = Complex::new(
             parse_with_default(matches.value_of("center_x"), center.re),
-            parse_with_default(matches.value_of("center_y"), center.im)
+            parse_with_default(matches.value_of("center_y"), center.im),
         );
 
         let constant = Complex::new(
             parse_with_default(matches.value_of("constant_x"), constant.re),
-            parse_with_default(matches.value_of("constant_y"), constant.im)
+            parse_with_default(matches.value_of("constant_y"), constant.im),
         );
 
         let mut params = FParams {
@@ -119,7 +119,6 @@ impl<'a> From<&'a ArgMatches<'a>> for FParams {
             kind_fn: parse_with_default(matches.value_of("kind_fn"), kind_fn),
 
             ..Default::default()
-
         };
 
         params.calc_z0();
