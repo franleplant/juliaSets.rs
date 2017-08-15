@@ -1,5 +1,5 @@
 [package]
-name = "juliasets"
+name = "fractals"
 version = "0.1.0"
 authors = ["Fran Guijarro <franleplant@gmail.com>"]
 
