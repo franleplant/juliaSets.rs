@@ -25,6 +25,7 @@ use fgenerator::FGenerator;
 //TODO add more test cases
 //TODO support for a parametric colorizer
 //TODO support for more functions
+//TODO show the function that it's used
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();

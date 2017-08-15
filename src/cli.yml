@@ -22,7 +22,7 @@ args:
       long: frames
       help: the amount of frames in a gif
       takes_value: true
-  - fn:
+  - kind_fn:
       short: f
       long: function
       value_name: FN_NUMBER

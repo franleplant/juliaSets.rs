@@ -26,6 +26,8 @@ impl FGenerator {
         let func = match params.kind_fn {
             0 => funcs::x2,
             1 => funcs::x3,
+            10 => funcs::q1,
+            20 => funcs::m1,
             _ => panic!("Function not supported"),
         };
 
