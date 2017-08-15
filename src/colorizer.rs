@@ -2,7 +2,7 @@ use std::f64::consts::PI;
 use std::default::Default;
 use conrod::color::{Rgba, Color};
 
-use generator::Colorizer;
+use fgenerator::Colorizer;
 
 #[derive(Debug)]
 pub struct SimpleColorizer {
