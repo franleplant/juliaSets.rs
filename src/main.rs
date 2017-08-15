@@ -14,12 +14,14 @@ mod funcs;
 use std::fs::File;
 use std::path::Path;
 
-use clap::{App, ArgMatches};
+use clap::App;
 
 use fparams::FParams;
 use fgenerator::FGenerator;
 
 
+//TODO add travis
+//TODO create binaries for different OSs?
 //TODO support for more functions
 //TODO support for gifs
 //TODO add more test cases
@@ -29,16 +31,6 @@ fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
-
-    if let Err(e) = run(matches) {
-        println!("Error {}", e);
-
-        ::std::process::exit(1);
-    }
-}
-
-fn run(matches: ArgMatches) -> Result<(), String> {
-
     let file_name = matches.value_of("INPUT").unwrap_or("test.png").to_string();
     let params = FParams::from(&matches);
     println!("Settings {:?}", params);
@@ -47,11 +39,7 @@ fn run(matches: ArgMatches) -> Result<(), String> {
     let img = gen.render();
     let ref mut fout = File::create(&Path::new(&file_name)).unwrap();
     let _ = image::ImageRgba8(img).save(fout, image::PNG);
-
-    Ok(())
 }
-
-
 
 
 // Create a gif
