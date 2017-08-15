@@ -1,0 +1,67 @@
+name: fractal
+version: "0.2"
+author: franleplant
+about: Creates beautiful parameterized fractals
+args:
+  - INPUT:
+      value_name: FILE
+      help: the output file
+      takes_value: true
+  - fn:
+      short: f
+      long: function
+      value_name: FN_NUMBER
+      help: the iterative function. 0 is order 2, 1 is order 3, defaults to 0.
+      takes_value: true
+  - width:
+      short: w
+      long: width
+      value_name: WIDTH
+      help: image width
+      takes_value: true
+  - height:
+      short: h
+      long: height
+      value_name: HEIGHT
+      help: image height
+      takes_value: true
+  - parallel:
+      short: p
+      long: parallel
+      value_name: BOOL
+      help: Run in parallel? Default to false
+      takes_value: true
+  - max_iter:
+      short: i
+      long: iter
+      value_name: MAX ITERATIONS
+      help: The max time we are going to iterate on every point
+      takes_value: true
+  - zoom:
+      short: z
+      long: zoom
+      value_name: ZOOM LEVEL
+      help: Sets the zoom level centered around the center point, (0,0) by default
+      takes_value: true
+  - center_x:
+      short: x
+      long: center_x
+      value_name: CENTER X
+      help: X coordinate of the center in the complex plain
+      takes_value: true
+  - center_y:
+      short: y
+      long: center_y
+      value_name: CENTER X
+      help: X coordinate of the center in the compley plain
+      takes_value: true
+  - constant_x:
+      long: Cx
+      value_name: Cte
+      help: The complex x constant that the iterative function will use
+      takes_value: true
+  - constant_y:
+      long: Cy
+      value_name: Cte
+      help: The complex y constant that the iterative function will use
+      takes_value: true

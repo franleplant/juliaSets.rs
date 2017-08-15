@@ -1,5 +1,5 @@
 [package]
-name = "juliasets"
+name = "fractals"
 version = "0.1.0"
 authors = ["Fran Guijarro <franleplant@gmail.com>"]
 
@@ -8,5 +8,6 @@ authors = ["Fran Guijarro <franleplant@gmail.com>"]
 image = "*"
 num = "0.1"
 conrod = "*"
-elmesque = "*"
 gif = "*"
+rayon = "*"
+clap = {version = "*", features = ["yaml"]}
