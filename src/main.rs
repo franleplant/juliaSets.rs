@@ -22,18 +22,19 @@ use fgenerator::FGenerator;
 
 //TODO add travis
 //TODO create binaries for different OSs?
-//TODO support for more functions
 //TODO support for gifs
 //TODO add more test cases
-//TODO pretty print FParams before running the program
 //TODO support for a parametric colorizer
+//TODO support for more functions
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
     let file_name = matches.value_of("INPUT").unwrap_or("test.png").to_string();
     let params = FParams::from(&matches);
-    println!("Settings {:?}", params);
+    println!("Settings");
+    println!("++++++++\n");
+    println!("{}", params);
     let gen = FGenerator::new(params);
 
     let img = gen.render();

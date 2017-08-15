@@ -1,4 +1,5 @@
 use std::default::Default;
+use std::fmt;
 use std::str::FromStr;
 
 use num::Complex;
@@ -124,5 +125,39 @@ impl<'a> From<&'a ArgMatches<'a>> for FParams {
         params.calc_z0();
         params.calc_delta();
         params
+    }
+}
+
+
+impl fmt::Display for FParams {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = vec![
+            "Measures".to_string(),
+            "=======".to_string(),
+            format!("{:<15} {}", "width", self.width),
+            format!("{:<15} {}", "height", self.height),
+            format!("{:<15} {}, {}", "range", self.range_x, self.range_y),
+            format!("{:<15} {}", "zoom", self.zoom),
+            format!("{:<15} {}", "center", self.center),
+            format!("{:<15} {}", "z0 (calc)", self.z0),
+            String::new(),
+
+            "Iteration params".to_string(),
+            "================".to_string(),
+            format!("{:<15} {}", "max iter", self.max_iter),
+            format!("{:<15} {}, {}", "delta (calc)", self.delta.re, self.delta.im),
+            format!("{:<15} {}", "parallel", self.parallel),
+            String::new(),
+
+            "Function".to_string(),
+            "========".to_string(),
+            format!("{:<15} {}", "kind fn", self.kind_fn),
+            format!("{:<15} {}", "constant", self.constant),
+            format!("{:<15} {}", "bailout", self.bailout),
+            String::new(),
+        ]
+            .join("\n");
+
+        write!(f, "{}", s)
     }
 }
