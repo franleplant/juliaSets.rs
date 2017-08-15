@@ -21,6 +21,9 @@ pub struct FParams {
     pub delta: Complex<f64>,
     pub kind_fn: usize,
     pub colorizer: usize,
+    pub is_gif: bool,
+    pub zoom_speed: f64,
+    pub gif_frames: u64,
 }
 
 impl Default for FParams {
@@ -40,6 +43,9 @@ impl Default for FParams {
             colorizer: 0,
             parallel: false,
             kind_fn: 0,
+            is_gif: false,
+            zoom_speed: 1.1,
+            gif_frames: 400,
         };
 
         params.calc_z0();
@@ -68,6 +74,12 @@ impl FParams {
             scaled_range_y / self.height as f64,
         );
     }
+
+    pub fn set_zoom(&mut self, zoom: f64) {
+        self.zoom = zoom;
+        self.calc_z0();
+        self.calc_delta();
+    }
 }
 
 fn parse_with_default<'a, T>(opt: Option<&'a str>, default: T) -> T
@@ -91,9 +103,11 @@ impl<'a> From<&'a ArgMatches<'a>> for FParams {
             range_y,
             zoom,
             center,
-            parallel,
             constant,
             kind_fn,
+            zoom_speed,
+            gif_frames,
+
             ..
         } = Default::default();
 
@@ -115,9 +129,12 @@ impl<'a> From<&'a ArgMatches<'a>> for FParams {
             range_y: parse_with_default(matches.value_of("range_y"), range_y),
             zoom: parse_with_default(matches.value_of("zoom"), zoom),
             center: center,
-            parallel: parse_with_default(matches.value_of("parallel"), parallel),
+            parallel: matches.is_present("parallel"),
             constant: constant,
             kind_fn: parse_with_default(matches.value_of("kind_fn"), kind_fn),
+            is_gif: matches.is_present("is_gif"),
+            zoom_speed: parse_with_default(matches.value_of("zoom_speed"), zoom_speed),
+            gif_frames: parse_with_default(matches.value_of("gif_frames"), gif_frames),
 
             ..Default::default()
         };
@@ -145,8 +162,16 @@ impl fmt::Display for FParams {
             "Iteration params".to_string(),
             "================".to_string(),
             format!("{:<15} {}", "max iter", self.max_iter),
-            format!("{:<15} {}, {}", "delta (calc)", self.delta.re, self.delta.im),
+            format!(
+                "{:<15} {}, {}",
+                "delta (calc)",
+                self.delta.re,
+                self.delta.im
+            ),
             format!("{:<15} {}", "parallel", self.parallel),
+            format!("{:<15} {}", "is gif", self.is_gif),
+            format!("{:<15} {}", "zoom speed", self.zoom_speed),
+            format!("{:<15} {}", "gif frames", self.gif_frames),
             String::new(),
 
             "Function".to_string(),
@@ -155,8 +180,7 @@ impl fmt::Display for FParams {
             format!("{:<15} {}", "constant", self.constant),
             format!("{:<15} {}", "bailout", self.bailout),
             String::new(),
-        ]
-            .join("\n");
+        ].join("\n");
 
         write!(f, "{}", s)
     }

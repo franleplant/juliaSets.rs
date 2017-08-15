@@ -7,6 +7,10 @@ Rust experiment to render Julia Sets images and gifs
 
 ```sh
 fractal --Cx="-0.4" --Cy 0.6 test1.png
+
+
+# Gif
+./target/release/fractals --Cx=0.285 --Cy 0 -x 0.5 -y 0.18 -h 200 -w 200 -g -s 1.1
 ```
 
 ## TODO

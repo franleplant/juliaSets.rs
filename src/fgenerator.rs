@@ -14,7 +14,7 @@ pub trait Colorizer {
 
 
 pub struct FGenerator {
-    params: FParams,
+    pub params: FParams,
     func: ComplexFn,
     //TODO improve this interface
     //we need to be able to parameterize SimpleColorizer but also to use other colorizer methods

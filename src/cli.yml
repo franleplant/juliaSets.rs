@@ -7,6 +7,21 @@ args:
       value_name: FILE
       help: the output file
       takes_value: true
+  - is_gif:
+      short: g
+      long: gif
+      help: output a gif that zooms in towards the center
+      takes_value: false
+  - zoom_speed:
+      short: s
+      long: speed
+      help: the zoom speed for gifx
+      takes_value: true
+  - gif_frames:
+      short: t
+      long: frames
+      help: the amount of frames in a gif
+      takes_value: true
   - fn:
       short: f
       long: function
@@ -28,9 +43,8 @@ args:
   - parallel:
       short: p
       long: parallel
-      value_name: BOOL
       help: Run in parallel? Default to false
-      takes_value: true
+      takes_value: false
   - max_iter:
       short: i
       long: iter
