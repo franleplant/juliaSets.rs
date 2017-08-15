@@ -1,5 +1,3 @@
-use std::marker::Sync;
-
 use image;
 use num::Complex;
 use rayon::prelude::*;
@@ -11,8 +9,15 @@ pub trait Colorizer {
     fn calc_color(&self, k: u32) -> Vec<u8>;
 }
 
+pub type ComplexFn = fn(Complex<f64>, Complex<f64>) -> Complex<f64>;
+
+fn square(x: Complex<f64>, c: Complex<f64>) -> Complex<f64> {
+    x * x + c
+}
+
 pub struct FGenerator {
     params: FParams,
+    func: ComplexFn,
     //TODO improve this interface
     //we need to be able to parameterize SimpleColorizer but also to use other colorizer methods
     colorizer: SimpleColorizer,
@@ -20,28 +25,21 @@ pub struct FGenerator {
 
 impl FGenerator {
     pub fn new(params: FParams) -> FGenerator {
+        let func = match params.kind_fn {
+            0 => square,
+            _ => panic!("Function not supported"),
+        };
+
+
         FGenerator {
             params: params,
+            func: func,
             colorizer: Default::default(),
         }
     }
 
     fn get_params(&self) -> &FParams {
         &self.params
-    }
-
-    //TODO Try with function pointers?
-    fn func(&self, x: Complex<f64>) -> Complex<f64> {
-        let params = self.get_params();
-
-        match params.kind_fn {
-            0 => self.square(x),
-            _ => panic!("Function not found"),
-        }
-    }
-
-    fn square(&self, x: Complex<f64>) -> Complex<f64> {
-        x * x + self.get_params().constant
     }
 
     pub fn render(&self) -> image::RgbaImage {
@@ -84,7 +82,7 @@ impl FGenerator {
 
         let mut k = 0;
         while (z.norm_sqr() < params.bailout) && (k < params.max_iter) {
-            z = self.func(z);
+            z = (self.func)(z, params.constant);
 
             k += 1;
         }

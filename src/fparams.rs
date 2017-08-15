@@ -79,8 +79,8 @@ where T: FromStr
     opt.unwrap().parse().unwrap_or(default)
 }
 
-impl<'a> From<ArgMatches<'a>> for FParams {
-    fn from(matches: ArgMatches) -> FParams {
+impl<'a> From<&'a ArgMatches<'a>> for FParams {
+    fn from(matches: &ArgMatches) -> FParams {
         let FParams {
             max_iter,
             width,
@@ -102,8 +102,8 @@ impl<'a> From<ArgMatches<'a>> for FParams {
         );
 
         let constant = Complex::new(
-            parse_with_default(matches.value_of("constant_x"), center.re),
-            parse_with_default(matches.value_of("constant_y"), center.im)
+            parse_with_default(matches.value_of("constant_x"), constant.re),
+            parse_with_default(matches.value_of("constant_y"), constant.im)
         );
 
         let mut params = FParams {
@@ -116,6 +116,7 @@ impl<'a> From<ArgMatches<'a>> for FParams {
             center: center,
             parallel: parse_with_default(matches.value_of("parallel"), parallel),
             constant: constant,
+            kind_fn: parse_with_default(matches.value_of("kind_fn"), kind_fn),
 
             ..Default::default()
 

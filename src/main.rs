@@ -11,13 +11,10 @@ mod fgenerator;
 mod colorizer;
 
 use std::fs::File;
-use std::default::Default;
 use std::path::Path;
 
-use num::Complex;
 use clap::{App, ArgMatches};
 
-use colorizer::SimpleColorizer;
 use fparams::FParams;
 use fgenerator::FGenerator;
 
@@ -39,7 +36,7 @@ fn main() {
 fn run(matches: ArgMatches) -> Result<(), String> {
 
     let file_name = matches.value_of("INPUT").unwrap_or("test.png").to_string();
-    let params = FParams::from(matches);
+    let params = FParams::from(&matches);
     println!("Settings {:?}", params);
     let gen = FGenerator::new(params);
 
