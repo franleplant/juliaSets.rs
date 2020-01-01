@@ -24,10 +24,11 @@ pub struct FGenerator {
 impl FGenerator {
     pub fn new(params: FParams) -> FGenerator {
         let func = match params.kind_fn {
-            0 => funcs::x2,
-            1 => funcs::x3,
-            10 => funcs::q1,
-            20 => funcs::m1,
+            0 => funcs::f0,
+            1 => funcs::f1,
+            10 => funcs::f10,
+            100 => funcs::f100,
+            200 => funcs::f200,
             _ => panic!("Function not supported"),
         };
 

@@ -148,6 +148,15 @@ impl<'a> From<&'a ArgMatches<'a>> for FParams {
 
 impl fmt::Display for FParams {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let func = match self.kind_fn {
+            0 => "x^2 + c",
+            1 => "x^3 + c",
+            10 => "exp(z) + c",
+            100 => "(1 - z^3 / 6) / (z - z^2 / 2)^2 + c",
+            200 => "[(z2+z)/Ln(z)] + c",
+            _ => "default",
+        };
+
         let s = vec![
             "Measures".to_string(),
             "=======".to_string(),
@@ -176,7 +185,7 @@ impl fmt::Display for FParams {
 
             "Function".to_string(),
             "========".to_string(),
-            format!("{:<15} {}", "kind fn", self.kind_fn),
+            format!("{:<15} {}", "kind fn", func),
             format!("{:<15} {}", "constant", self.constant),
             format!("{:<15} {}", "bailout", self.bailout),
             String::new(),
